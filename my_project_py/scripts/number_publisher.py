@@ -18,6 +18,7 @@ class NumberPublisher:
         msg = Float64()
         msg.data = self.number
         self.number_publisher.publish(msg)
+        rospy.loginfo("Published value: " + str(msg.data))
         
         
 
