@@ -2,6 +2,7 @@
 
 // Mensagens
 #include "std_msgs/Float64.h"
+#include "std_srvs/Empty.h"
 
 // ELE VAI CRIAR UM SUBCRIVE, CADA VEZ QUE TIVER UMA NOVA PUB NO NUMBER
 // ELE VAI SOMAR NO COUNT
@@ -15,6 +16,7 @@ class Counter{
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
             timer_pub = nh->createTimer(ros::Duration(publish_interval), &Counter::timerCallback, this);
+            reset_srv = nh->advertiseService("/reset_counter_service", &Counter::resetSrvCallback, this);
             
             ROS_INFO("Inicialited Counter_node");
         }
@@ -33,6 +35,12 @@ class Counter{
             count_pub.publish(msg);
         }
 
+        bool resetSrvCallback(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res){
+            this->count = 0;
+            ROS_INFO("Count reseted");
+            return true;
+        }
+
     //Metodos privados
     private:
         double count;
@@ -40,6 +48,7 @@ class Counter{
         ros::Subscriber num_sub;
         ros::Publisher count_pub;
         ros::Timer timer_pub;
+        ros::ServiceServer reset_srv;
 };
 
 int main(int argc, char **argv){
