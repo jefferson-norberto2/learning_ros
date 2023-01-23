@@ -16,7 +16,7 @@ class Counter{
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
             timer_pub = nh->createTimer(ros::Duration(publish_interval), &Counter::timerCallback, this);
-            reset_srv = nh->advertiseService("/reset_counter_service", &Counter::resetSrvCallback, this);
+            reset_srv = nh->advertiseService("/reset_counter", &Counter::resetSrvCallback, this);
             
             ROS_INFO("Inicialited Counter_node");
         }
