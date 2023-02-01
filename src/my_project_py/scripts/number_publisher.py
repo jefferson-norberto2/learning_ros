@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
+import random
 from std_msgs.msg import Float64
 from std_srvs.srv import Empty
 
@@ -16,7 +17,7 @@ class NumberPublisher:
         self.timer_pub = rospy.Timer(rospy.Duration(self.publisher_interval), self.timer_callback)
         self.timer_reset = rospy.Timer(rospy.Duration(self.reset_interval), self.reset_callback)
         
-        self.client_reset = rospy.ServiceProxy("reset_counter", Empty, )
+        self.client_reset = rospy.ServiceProxy("reset_counter", Empty)
 
         rospy.loginfo("Inicialized")
 
@@ -27,7 +28,10 @@ class NumberPublisher:
         rospy.loginfo("Published value: " + str(msg.data))
     
     def reset_callback(self, event):
-        rospy.loginfo("Solicitação de reset da contagem")
+        rospy.loginfo("Solicitação de reset da contagem em " + str(self.reset_interval) + " segundos.")
+        self.reset_interval = random.randint(1, 20)
+        self.timer_reset.shutdown()
+        self.timer_reset = rospy.Timer(rospy.Duration(self.reset_interval), self.reset_callback)
         self.client_reset()
         
         
