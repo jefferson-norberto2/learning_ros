@@ -6,4 +6,5 @@
         <remap from="/number" to="$(arg number_topic)"/>
     </node>
     
+    <node name="counter_cpp_2" pkg="my_project_cpp" type="counter" output="screen"/>
 </launch>
