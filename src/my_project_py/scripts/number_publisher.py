@@ -34,11 +34,10 @@ class NumberPublisher:
         self.timer_reset = rospy.Timer(rospy.Duration(self.reset_interval), self.reset_callback)
         self.client_reset()
         
-        
 
 if __name__ == '__main__':
     try:
-        rospy.init_node("number_publisher_node")
+        rospy.init_node("number_publisher")
         NumberPublisher()
         rospy.spin()
     except rospy.ROSInterruptException:
