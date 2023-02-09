@@ -1,5 +1,6 @@
 <launch>
     <arg name="number_topic" default="/number"/>
+    <param name="initial_count" type="double" value="3.1415"/>
 
     <node name="counter_cpp" pkg="my_project_cpp" type="counter" output="screen">
         <remap from="/current_counter" to="/count"/>

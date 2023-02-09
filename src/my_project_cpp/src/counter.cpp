@@ -13,6 +13,10 @@ class Counter{
         Counter(ros::NodeHandle *nh){
             count = 0;
             publish_interval = 1;
+            
+            nh->setParam("custom_param", false);
+            nh->getParam("initial_count", count);
+
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
             timer_pub = nh->createTimer(ros::Duration(publish_interval), &Counter::timerCallback, this);
@@ -55,7 +59,7 @@ int main(int argc, char **argv){
     // inicializar o nó
     ros::init(argc, argv, "counter_node");
     //criar o nodehandle
-    ros::NodeHandle nh;
+    ros::NodeHandle nh; 
 
     Counter counter = Counter(&nh);
     ros::spin();
