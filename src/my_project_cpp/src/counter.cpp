@@ -14,7 +14,7 @@ class Counter{
             count = 0;
             publish_interval = 1;
             
-            nh->setParam("custom_param", false);
+            
             if (nh->getParam("initial_count", count)){
                 ROS_INFO("Contagem inicial em %f", count);
             } else{
@@ -22,6 +22,21 @@ class Counter{
             }
 
             nh->param<double>("pub_rate", publish_interval, 1);
+
+            if (nh->hasParam("pub_rate") || nh->hasParam("initial_count")){
+                ROS_WARN("Parametros customizados");
+                if (nh->hasParam("initial_count")){
+                    nh->setParam("custom_param", true);
+                }else{
+                    nh->setParam("custom_param", false);
+                }
+            }
+
+            if (nh->hasParam("delete_param")){
+                ROS_WARN("Deletando Parametros customizados");
+                nh->deleteParam("initial_count");
+                nh->deleteParam("pub_rate");
+            }
 
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
