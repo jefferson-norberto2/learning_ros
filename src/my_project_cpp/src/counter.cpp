@@ -15,7 +15,13 @@ class Counter{
             publish_interval = 1;
             
             nh->setParam("custom_param", false);
-            nh->getParam("initial_count", count);
+            if (nh->getParam("initial_count", count)){
+                ROS_INFO("Contagem inicial em %f", count);
+            } else{
+                ROS_INFO("Contagem inicial não definida");
+            }
+
+            nh->param<double>("pub_rate", publish_interval, 1);
 
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
