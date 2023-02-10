@@ -1,7 +1,9 @@
 <launch>
     <arg name="number_topic" default="/number"/>
-    <param name="initial_count" type="double" value="3.1415"/>
-    <param name="pub_rate" type="double" value="2.5"/>
+    <!-- <param name="initial_count" type="double" value="3.1415"/>
+    <param name="pub_rate" type="double" value="2.5"/> -->
+
+    <rosparam command="load" file="$(find my_project_bringup)/config/my_project.yaml"/>
     <param name="delete_param" type="bool" value="True"/>
 
     <node name="counter_cpp" pkg="my_project_cpp" type="counter" output="screen">
