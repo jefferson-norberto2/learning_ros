@@ -3,6 +3,7 @@
 // Mensagens
 #include "std_msgs/Float64.h"
 #include "std_srvs/Empty.h"
+#include "my_project_msgs/CounterHistory.h"
 
 // ELE VAI CRIAR UM SUBCRIVE, CADA VEZ QUE TIVER UMA NOVA PUB NO NUMBER
 // ELE VAI SOMAR NO COUNT
@@ -14,7 +15,6 @@ class Counter{
             count = 0;
             publish_interval = 1;
             
-            
             if (nh->getParam("initial_count", count)){
                 ROS_INFO("Contagem inicial em %f", count);
             } else{
@@ -25,11 +25,9 @@ class Counter{
 
             if (nh->hasParam("pub_rate") || nh->hasParam("initial_count")){
                 ROS_WARN("Parametros customizados");
-                if (nh->hasParam("initial_count")){
-                    nh->setParam("custom_param", true);
-                }else{
-                    nh->setParam("custom_param", false);
-                }
+                nh->setParam("custom_param", true);   
+            }else{
+                nh->setParam("custom_param", false);
             }
 
             if (nh->hasParam("delete_param")){
@@ -38,17 +36,23 @@ class Counter{
                 nh->deleteParam("pub_rate");
             }
 
+            last_count = count;
+            cycles = 0;
+
             num_sub = nh->subscribe("/number", 10, &Counter::numberCallback, this);
             count_pub = nh->advertise<std_msgs::Float64>("/current_counter", 10);
             timer_pub = nh->createTimer(ros::Duration(publish_interval), &Counter::timerCallback, this);
             reset_srv = nh->advertiseService("/reset_counter", &Counter::resetSrvCallback, this);
+            history_pub = nh->advertise<my_project_msgs::CounterHistory>("/history_counter", 10);
             
+
             ROS_INFO("Inicialited Counter_node");
         }
 
         // O símbolo & diz que estou passando por referência
         void numberCallback(const std_msgs::Float64 &msg){
-            // Em java seria this.count
+            cycles++;
+            last_count = count;
             this->count = this->count + msg.data;
             ROS_INFO("Contagem atual %f", count);
         }
@@ -58,6 +62,12 @@ class Counter{
             std_msgs::Float64 msg;
             msg.data = this->count;
             count_pub.publish(msg);
+
+            my_project_msgs::CounterHistory history_msg;
+            history_msg.current_value = count;
+            history_msg.last_value = last_count;
+            history_msg.cycles = cycles;
+            history_pub.publish(history_msg);
         }
 
         bool resetSrvCallback(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res){
@@ -70,6 +80,9 @@ class Counter{
     private:
         double count;
         double publish_interval;
+        double last_count;
+        int cycles;
+        ros::Publisher history_pub;
         ros::Subscriber num_sub;
         ros::Publisher count_pub;
         ros::Timer timer_pub;

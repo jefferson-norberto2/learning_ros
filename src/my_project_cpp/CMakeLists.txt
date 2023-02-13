@@ -10,6 +10,7 @@ project(my_project_cpp)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  my_project_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -206,6 +207,9 @@ include_directories(
 
 add_executable(counter src/counter.cpp)
 target_link_libraries(counter ${catkin_LIBRARIES})
+
+#Usa isso quando a custom msg é desse mesmo pacote, para  não dar erro na compilação
+#add_dependencies(counter ${catkin_EXPORTED_TARGETS} my_project_cpp_generate_messages_cpp)
 
 add_executable(number_publisher src/number_publisher.cpp)
 target_link_libraries(number_publisher ${catkin_LIBRARIES})

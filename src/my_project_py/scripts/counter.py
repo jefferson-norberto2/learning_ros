@@ -6,8 +6,22 @@ from std_srvs.srv import Empty, EmptyResponse
 
 class Counter:
     def __init__(self):
-        self.count = 0
-        self.pub_interval = 3
+        self.count = rospy.get_param("initial_count", 0)
+        self.pub_interval = rospy.get_param("~pub_rate", 3)
+
+        rospy.set_param("~custom_param", False)
+
+        if (rospy.has_param("initial_count") or rospy.has_param("~pub_rate")):
+            rospy.logwarn("Parametros customizados")
+            rospy.set_param("~custom_param", True)
+        
+        if rospy.get_param("~delete_param", False):
+            rospy.logwarn("Deletando parametros")
+            if rospy.has_param("~pub_rate"):
+                rospy.delete_param("~pub_rate")
+            if rospy.has_param("initial_count"):
+                rospy.delete_param("initial_count")
+             
 
         # nome do tópico, tipo de mensagen e a função callback e pode definir o tamanho do buffer
         self.num_sub = rospy.Subscriber("/number", Float64, self.number_callback, queue_size=10)
@@ -36,4 +50,4 @@ if __name__ == '__main__':
         Counter()
         rospy.spin()
     except rospy.ROSInterruptException as interrupt:
-        rospy.loginfo("Error in node number:" + interrupt)
+        rospy.logerr("Error in node number:" + interrupt)
