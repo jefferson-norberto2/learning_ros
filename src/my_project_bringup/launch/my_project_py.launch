@@ -9,4 +9,6 @@
         <param name="delete_param" type="bool" value="True" />
     </node>
 
+    <node name="publisher_py" pkg="my_project_py" type="number_publisher.py" output="screen"/>
+
 </launch>

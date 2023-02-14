@@ -25,7 +25,6 @@ class NumberPublisher:
         msg = Float64()
         msg.data = self.number
         self.number_publisher.publish(msg)
-        rospy.loginfo("Published value: " + str(msg.data))
     
     def reset_callback(self, event):
         rospy.loginfo("Solicitação de reset da contagem em " + str(self.reset_interval) + " segundos.")

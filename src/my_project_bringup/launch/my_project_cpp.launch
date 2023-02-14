@@ -3,10 +3,9 @@
     <arg name="new_counter" default="False"/>
 
     <include file="$(find my_project_bringup)/launch/counter_cpp.launch">
-        <arg name="number_topic" value="new_number"/>
     </include>
     
-    <include file="$(find my_project_bringup)/launch/publisher_py.launch"/>
+    <!-- <include file="$(find my_project_bringup)/launch/publisher_py.launch"/> -->
 
     <group if="$(arg new_counter)">
         <node name="counter_cpp_3" pkg="my_project_cpp" type="counter" output="screen"/>

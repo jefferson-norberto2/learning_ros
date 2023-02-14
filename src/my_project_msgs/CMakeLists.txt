@@ -17,6 +17,11 @@ add_message_files(
   CounterHistory.msg
 )
 
+add_service_files(
+  FILES
+  CheckNumber.srv
+)
+
 generate_messages(
   DEPENDENCIES
   std_msgs

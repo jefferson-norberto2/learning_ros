@@ -4,6 +4,7 @@
 #include "std_msgs/Float64.h"
 #include "std_srvs/Empty.h"
 #include "my_project_msgs/CounterHistory.h"
+#include "my_project_msgs/CheckNumber.h"
 
 // ELE VAI CRIAR UM SUBCRIVE, CADA VEZ QUE TIVER UMA NOVA PUB NO NUMBER
 // ELE VAI SOMAR NO COUNT
@@ -44,6 +45,7 @@ class Counter{
             timer_pub = nh->createTimer(ros::Duration(publish_interval), &Counter::timerCallback, this);
             reset_srv = nh->advertiseService("/reset_counter", &Counter::resetSrvCallback, this);
             history_pub = nh->advertise<my_project_msgs::CounterHistory>("/history_counter", 10);
+            check_greater_srv = nh->advertiseService("/check_greater", &Counter::checkGreaterSrvCallback, this);
             
 
             ROS_INFO("Inicialited Counter_node");
@@ -76,6 +78,17 @@ class Counter{
             return true;
         }
 
+        bool checkGreaterSrvCallback(my_project_msgs::CheckNumber::Request &req, my_project_msgs::CheckNumber::Response &res){
+            if(req.number > count){
+                res.result = true;
+            }else{
+                res.result = false;
+            }
+            
+            ROS_WARN("Checando se o número é maior");
+            return true;
+        }
+
     //Metodos privados
     private:
         double count;
@@ -87,6 +100,7 @@ class Counter{
         ros::Publisher count_pub;
         ros::Timer timer_pub;
         ros::ServiceServer reset_srv;
+        ros::ServiceServer check_greater_srv;
 };
 
 int main(int argc, char **argv){
